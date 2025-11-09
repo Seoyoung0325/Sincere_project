@@ -54,7 +54,7 @@ public class SelectSlot : MonoBehaviour
             else  //세이브파일X
             {
                 saveFile[i] = false;  //해당 슬롯 번호의 bool값 true로
-                slotText[i].text = "비어있음";
+                slotText[i].text = $"빈 슬롯 {i}";
 
                 if (isForLoading)
                 {
