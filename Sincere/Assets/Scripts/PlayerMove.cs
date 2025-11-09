@@ -25,6 +25,21 @@ public class PlayerMove : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+
+    // 플레이어를 저장된 위치로 이동
+    void Start()
+    {
+        if (DataManager.instance != null)
+        {
+            Vector3 savedPos = DataManager.instance.GetPlayerPosition();
+            if (savedPos != Vector3.zero)
+            {
+                transform.position = savedPos;
+            }
+        }
+    }
+
+
     private void Update()
     {
         // a, left 키를 누르면 -1, d, right키를 누르면 +1, 아무키도 안누르면 0

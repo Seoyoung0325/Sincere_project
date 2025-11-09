@@ -1,4 +1,0 @@
-repository "Sincere_project/Sincere_project@14569640313137@cloud"
-  path "/"
-    br "/main"
-    co "/main"
