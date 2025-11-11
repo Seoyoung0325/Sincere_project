@@ -1,28 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class EffectsSetting : MonoBehaviour
 {
-    public Slider effectsSlider;             // 효과음 볼륨 조절 슬라이더
-    //public AudioSource[] effectsSources;     // 효과음 오디오 소스 배열 - 사운드가 없으므로 관련 코드 주석 처리
+    public Slider effectsSlider;
 
     void Start()
     {
-        // 슬라이더 값이 변경될 때마다 SetEffectsVolume 함수 호출
+        // 저장된 값 불러오기 (없으면 기본값 0.5)
+        float savedVolume = PlayerPrefs.GetFloat("EffectsVolume", 0.5f);
+        effectsSlider.value = savedVolume;
+
+        // 초기 적용
+        SetEffectsVolume(savedVolume);
+
+        // 슬라이더 값 변경 시 적용
         effectsSlider.onValueChanged.AddListener(SetEffectsVolume);
     }
 
     void SetEffectsVolume(float value)
     {
-        // 모든 효과음 오디오 소스의 볼륨을 슬라이더 값으로 설정
-        /*foreach (AudioSource effects in effectsSources)
+        // 싱글톤 매니저에 전달
+        EffectSoundManager manager = FindObjectOfType<EffectSoundManager>();
+        if (manager != null)
         {
-            effects.volume = value;
-        }*/
-        float result = value * 100;
-        Debug.Log("효과음 설정 완료: " + (int)result);
-    }
+            manager.SetVolume(value);
+        }
 
+        // 저장
+        PlayerPrefs.SetFloat("EffectsVolume", value);
+        Debug.Log("효과음 설정 완료: " + (int)(value * 100));
+    }
 }
