@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
-/*public class BrightnessSetting : MonoBehaviour
+public class BrightnessSetting : MonoBehaviour
 {
     public Slider brightnessSlider;
     public Volume postProcessingVolume;
@@ -24,8 +25,6 @@ using UnityEngine.Rendering.Universal;
 
     void SetBrightness(float value)
     {
-        // Post Exposure는 -2 ~ 2 정도 범위 추천
-        colorAdjustments.postExposure.value = Mathf.Lerp(-2f, 2f, value);
-        PlayerPrefs.SetFloat("Brightness", value);
+        BrightnessManager.instance?.ApplyBrightness(value);
     }
-}*/
+}
