@@ -10,9 +10,11 @@ public class PlayerMove : MonoBehaviour
     public Sprite spriteRight; // 오른쪽 이미지
     public Sprite spriteLeft;  // 왼쪽 이미지
 
-    public float walkSpeed = 5.0f; // 기본 속도
-    public float runSpeed = 8.0f;  // 쉬프트 누르면 빨라지는 속도
-    public float jumpForce = 7.0f; // 점프 힘
+    public float currentSpeed;
+    public float walkSpeed = 5.0f;  // 기본 속도
+    public float runSpeed = 8.0f;   // 쉬프트 누르면 빨라지는 속도
+    public float slowSpeed = 3.0f;  // 컨트롤 누르면 느려지는 속도
+    public float jumpForce = 7.0f;  // 점프 힘
 
     private bool isGrounded = false;
     public Transform groundCheck; // 바닥 감지 위치
@@ -46,8 +48,17 @@ public class PlayerMove : MonoBehaviour
         float x = Input.GetAxisRaw("Horizontal");
         Vector3 moveDirection = new Vector3(x, 0, 0);   // 이동 방향 설정
 
-        // 쉬프트 키를 누르면 속도 증가
-        float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+        // 쉬프트 키를 누르면 속도 증가, 컨트롤 키를 누르면 속도 감소
+        currentSpeed = walkSpeed;
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            currentSpeed = slowSpeed;
+        }
+        else if (Input.GetKey(KeyCode.LeftShift))
+        {
+            currentSpeed = runSpeed;
+        }
+
 
         // 오브젝트 속력 설정
         rigid2d.velocity = new Vector2(moveDirection.x * currentSpeed, rigid2d.velocity.y);
@@ -71,7 +82,7 @@ public class PlayerMove : MonoBehaviour
         Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, isGrounded ? Color.green : Color.red);
 
         // W키, 윗 방향키 중 하나라도 누르면 점프
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded)
+        if ((Input.GetKeyDown(KeyCode.Space)) && isGrounded)
         {
             rigid2d.velocity = new Vector2(rigid2d.velocity.x, jumpForce);
         }
