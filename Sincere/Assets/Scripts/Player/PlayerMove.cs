@@ -21,12 +21,14 @@ public class PlayerMove : MonoBehaviour
     public float groundCheckDistance = 0.2f; // 바닥 감지 거리
     public LayerMask groundLayer; // 바닥 레이어
 
+    public float minX = 0f;     // 이동 제한 최소 X
+    public float maxX = 100f;   // 이동 제한 최대 X
+
     private void Awake()
     {
         rigid2d = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
-
 
     // 플레이어를 저장된 위치로 이동
     void Start()
@@ -41,11 +43,17 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-
     private void Update()
     {
         // a, left 키를 누르면 -1, d, right키를 누르면 +1, 아무키도 안누르면 0
         float x = Input.GetAxisRaw("Horizontal");
+
+        // 이동 제한: 경계에 도달하면 입력 무시
+        if ((x < 0 && transform.position.x <= minX) || (x > 0 && transform.position.x >= maxX))
+        {
+            x = 0;
+        }
+
         Vector3 moveDirection = new Vector3(x, 0, 0);   // 이동 방향 설정
 
         // 쉬프트 키를 누르면 속도 증가, 컨트롤 키를 누르면 속도 감소
@@ -58,7 +66,6 @@ public class PlayerMove : MonoBehaviour
         {
             currentSpeed = runSpeed;
         }
-
 
         // 오브젝트 속력 설정
         rigid2d.velocity = new Vector2(moveDirection.x * currentSpeed, rigid2d.velocity.y);
