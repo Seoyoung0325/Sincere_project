@@ -25,12 +25,10 @@ public class CameraFollow : MonoBehaviour
 
         // 따라갈 위치 계산
         float targetX = target.transform.position.x;
-        float targetY = target.transform.position.y + offsetY;
 
         // 카메라 이동 범위를 맵 범위 내로 제한
         float clampedX = Mathf.Clamp(targetX, minBounds.x + camWidth, maxBounds.x - camWidth);
-        float clampedY = Mathf.Clamp(targetY, minBounds.y + camHeight, maxBounds.y - camHeight);
 
-        transform.position = new Vector3(clampedX, clampedY, transform.position.z);
+        transform.position = new Vector3(clampedX, 0f, transform.position.z);
     }
 }
