@@ -24,6 +24,8 @@ public class PlayerMove : MonoBehaviour
     public float minX = 0f;     // 이동 제한 최소 X
     public float maxX = 100f;   // 이동 제한 최대 X
 
+    public int moveInput = 0;
+
     private void Awake()
     {
         rigid2d = GetComponent<Rigidbody2D>();
@@ -93,5 +95,10 @@ public class PlayerMove : MonoBehaviour
         {
             rigid2d.velocity = new Vector2(rigid2d.velocity.x, jumpForce);
         }
+    }
+
+    public bool IsGrounded()
+    {
+        return isGrounded;
     }
 }
