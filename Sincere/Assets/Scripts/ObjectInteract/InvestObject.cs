@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InvestObject : MonoBehaviour
@@ -6,6 +7,7 @@ public class InvestObject : MonoBehaviour
 
     private float interactionDistance = 2f;  //상호작용 가능 거리 임의설정, 추후 수정가능
     [SerializeField] private GameObject interactionUI;
+    [SerializeField] private GameObject dialogueUI;
 
     private bool isPlayerInRange = false;
 
@@ -15,6 +17,11 @@ public class InvestObject : MonoBehaviour
         if (interactionUI != null)
         {
             interactionUI.SetActive(false);
+        }
+
+        if (dialogueUI != null)
+        {
+            dialogueUI.SetActive(false);
         }
 
         if (player == null)
@@ -65,7 +72,8 @@ public class InvestObject : MonoBehaviour
         }
     }
 
-    //UI클릭 시 호출될 함수 (Button의 OnClick에 연결)
+
+    //UI클릭 시 호출
     public void OnUIClick()
     {
         if (isPlayerInRange)
@@ -77,12 +85,12 @@ public class InvestObject : MonoBehaviour
     private void Interact()
     {
         Debug.Log("오브젝트 조사");
-    }
 
-    // 디버그용 - 상호작용 범위 시각화 (Scene 뷰에서만 보임)
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, interactionDistance);
+        HideUI();
+
+        if (dialogueUI != null)
+        {
+            dialogueUI.SetActive(true);
+        }
     }
 }
