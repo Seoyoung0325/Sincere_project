@@ -1,0 +1,18 @@
+{
+  "clues": [
+    {
+      "clueID": "clue_001",
+      "clueMap": "map_001",
+      "clueName": "단서1번",
+      "clueImagePath": "Clue/clue_001",
+      "clueDescription": "단서1번 설명"
+    },
+    {
+      "clueID": "clue_002",
+      "clueMap": "map_001",
+      "clueName": "단서2번",
+      "clueImagePath": "Clue/clue_002",
+      "clueDescription": "단서2번 설명"
+    }
+  ]
+}

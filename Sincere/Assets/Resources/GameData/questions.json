@@ -1,0 +1,18 @@
+{
+  "questions": [
+    {
+      "questionID": "question_001",
+      "questionMap": "map_001",
+      "questionName": "의문점1번",
+      "questionDescription": "의문점1번 설명",
+      "questionClue": "clue_001"
+    },
+    {
+      "questionID": "question_002",
+      "questionMap": "map_001",
+      "questionName": "의문점2번",
+      "questionDescription": "의문점2번 설명",
+      "questionClue": "clue_002"
+    }
+  ]
+}
