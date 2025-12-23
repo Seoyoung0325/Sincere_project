@@ -1,0 +1,22 @@
+{
+  "objects": [
+    {
+      "objectID": "object_001",
+      "objectClue": "",
+      "objectQuestion": "",
+      "objectType": "DialogueOnly"
+    },
+    {
+      "objectID": "object_002",
+      "objectClue": "clue_001",
+      "objectQuestion": "question_001",
+      "objectType": "ClueAndDestroy"
+    },
+    {
+      "objectID": "object_003",
+      "objectClue": "clue_002",
+      "objectQuestion": "question_002",
+      "objectType": "ClueAndKeep"
+    }
+  ]
+}
