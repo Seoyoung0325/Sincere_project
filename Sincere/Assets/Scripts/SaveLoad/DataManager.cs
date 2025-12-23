@@ -42,6 +42,7 @@ public class GameData
     public PlayerData player;
     public List<ClueData> acquiredClues;
     public List<QuestionData> acquiredQuestions;
+    public List<string> investedObjects;
 }
 
 
@@ -120,8 +121,6 @@ public class DataManager : MonoBehaviour
             allQuestions = questionList.questions;
         }
         else { Debug.Log($"의문점 데이터 로드 실패"); }
-
-        Debug.Log("LoadGameData 완료!");
     }
 
 
@@ -181,7 +180,6 @@ public class DataManager : MonoBehaviour
     // 오브젝트 상호작용 시 단서/의문점 업데이트
     public void UpdateObjectClue(string objectID)
     {
-        Debug.Log("업데이트 시작");
         // 1. 오브젝트 데이터 찾기
         ObjectData obj = allObjects.Find(o => o.objectID == objectID);
         if (obj == null)
@@ -230,12 +228,12 @@ public class DataManager : MonoBehaviour
     }
 
     // 전체 습득한 단서 불러오기
-    public List<ClueData> GetAllClueIDs()
+    public List<ClueData> GetAcquiredClues()
     {
         return new List<ClueData>(acquiredClues);
     }
 
-    
+
 
     // 의문점 습득
     public void AddQuestion(QuestionData questionID)
@@ -254,7 +252,7 @@ public class DataManager : MonoBehaviour
     }
 
     // 전체 습득한 의문점 불러오기
-    public List<QuestionData> GetAllQuestionIDs()
+    public List<QuestionData> GetAcquiredQuestions()
     {
         return new List<QuestionData>(acquiredQuestions);
     }
