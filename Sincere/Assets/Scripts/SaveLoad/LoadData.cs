@@ -28,7 +28,7 @@ public class LoadData : MonoBehaviour
     {
         if (DataManager.instance == null)
         {
-            Debug.LogError("DataManager가 없습니다!");
+            Debug.LogError("DataManager 연결 안됨");
             return;
         }
 
