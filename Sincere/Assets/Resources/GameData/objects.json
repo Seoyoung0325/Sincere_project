@@ -4,18 +4,21 @@
       "objectID": "object_001",
       "objectClue": "",
       "objectQuestion": "",
+      "dialogueID": "dialogue_001",
       "objectType": "DialogueOnly"
     },
     {
       "objectID": "object_002",
       "objectClue": "clue_001",
       "objectQuestion": "question_001",
+      "dialogueID": "dialogue_002",
       "objectType": "ClueAndDestroy"
     },
     {
       "objectID": "object_003",
       "objectClue": "clue_002",
       "objectQuestion": "question_002",
+      "dialogueID": "dialogue_003",
       "objectType": "ClueAndKeep"
     }
   ]

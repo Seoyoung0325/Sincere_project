@@ -16,6 +16,7 @@ public class ObjectData
     public string objectID;
     public string objectClue;
     public string objectQuestion;
+    public string dialogueID;
     public string objectType;
 }
 [System.Serializable]
@@ -35,6 +36,16 @@ public class QuestionData
     public string questionName;
     public string questionDescription;
     public string questionClue;
+}
+[System.Serializable]
+public class DialogueData
+{
+    public string dialogueID;
+    public string[] characterName;
+    public string[] characterSprite;
+    public string[] dialogue;
+    public int clueTiming;
+    public int questionTiming;
 }
 [System.Serializable]
 public class GameData
@@ -59,6 +70,7 @@ public class DataManager : MonoBehaviour
     public List<ObjectData> allObjects = new List<ObjectData>();
     public List<ClueData> allClues = new List<ClueData>();
     public List<QuestionData> allQuestions = new List<QuestionData>();
+    public List<DialogueData> allDialogues = new List<DialogueData>();
 
     public string savePath;
     public int slot;
@@ -121,6 +133,21 @@ public class DataManager : MonoBehaviour
             allQuestions = questionList.questions;
         }
         else { Debug.Log($"의문점 데이터 로드 실패"); }
+
+        // Resources/GameData/dialogues.json
+        TextAsset dialoguesJson = Resources.Load<TextAsset>("GameData/dialogues");
+        if (dialoguesJson != null)
+        {
+            DialogueDataList dialoguesList = JsonUtility.FromJson<DialogueDataList>(dialoguesJson.text);
+            allDialogues = dialoguesList.dialogues;
+        }
+        else { Debug.Log($"대사 데이터 로드 실패"); }
+    }
+
+    // dialogueID로 대화 데이터 찾기
+    public DialogueData GetDialogueByID(string dialogueID)
+    {
+        return allDialogues.Find(d => d.dialogueID == dialogueID);
     }
 
 
@@ -177,7 +204,7 @@ public class DataManager : MonoBehaviour
 
 
 
-    // 오브젝트 상호작용 시 단서/의문점 업데이트
+    // 오브젝트 상호작용 시 단서 업데이트
     public void UpdateObjectClue(string objectID)
     {
         // 1. 오브젝트 데이터 찾기
@@ -197,8 +224,20 @@ public class DataManager : MonoBehaviour
                 AddClue(clue);
             }
         }
+    }
 
-        // 3. 연관된 의문점 추가
+    // 오브젝트 상호작용 시 의문점 업데이트
+    public void UpdateObjectQuestion(string objectID)
+    {
+        // 1. 오브젝트 데이터 찾기
+        ObjectData obj = allObjects.Find(o => o.objectID == objectID);
+        if (obj == null)
+        {
+            Debug.LogWarning($"오브젝트 ID '{objectID}'를 찾을 수 없습니다.");
+            return;
+        }
+
+        // 2. 연관된 의문점 추가
         if (obj.objectQuestion != null)
         {
             QuestionData question = allQuestions.Find(q => q.questionID == obj.objectQuestion);
@@ -212,19 +251,13 @@ public class DataManager : MonoBehaviour
 
 
     // 단서 습득
-    public void AddClue(ClueData clueID)
+    public void AddClue(ClueData clue)
     {
-        if (!acquiredClues.Contains(clueID))
+        if (!acquiredClues.Exists(c => c.clueID == clue.clueID))
         {
-            acquiredClues.Add(clueID);
-            print($"단서 추가: {clueID}");
+            acquiredClues.Add(clue);
+            print($"단서 추가: {clue.clueID}");
         }
-    }
-
-    // 단서 획득 여부 확인
-    public bool HasClue(ClueData clueID)
-    {
-        return acquiredClues.Contains(clueID);
     }
 
     // 전체 습득한 단서 불러오기
@@ -236,19 +269,13 @@ public class DataManager : MonoBehaviour
 
 
     // 의문점 습득
-    public void AddQuestion(QuestionData questionID)
+    public void AddQuestion(QuestionData question)
     {
-        if (!acquiredQuestions.Contains(questionID))
+        if (!acquiredQuestions.Exists(q => q.questionID == question.questionID))
         {
-            acquiredQuestions.Add(questionID);
-            print($"의문점 추가: {questionID}");
+            acquiredQuestions.Add(question);
+            print($"의문점 추가: {question.questionID}");
         }
-    }
-
-    // 의문점 획득 여부 확인
-    public bool HasQuestion(QuestionData questionID)
-    {
-        return acquiredQuestions.Contains(questionID);
     }
 
     // 전체 습득한 의문점 불러오기
@@ -277,4 +304,10 @@ public class ClueDataList
 public class QuestionDataList
 {
     public List<QuestionData> questions;
+}
+
+[System.Serializable]
+public class DialogueDataList
+{
+    public List<DialogueData> dialogues;
 }
