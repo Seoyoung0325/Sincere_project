@@ -45,17 +45,10 @@ public class NoteController : MonoBehaviour
         // 노트가 열려있을 때만 방향키 입력 처리
         if (isOpen)
         {
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            if (Input.GetKeyDown(KeyCode.Tab))
             {
                 currentIndex++;
                 if (currentIndex > 2) currentIndex = 0; // 순환
-                ShowSection(currentIndex);
-            }
-
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                currentIndex--;
-                if (currentIndex < 0) currentIndex = 2; // 순환
                 ShowSection(currentIndex);
             }
         }

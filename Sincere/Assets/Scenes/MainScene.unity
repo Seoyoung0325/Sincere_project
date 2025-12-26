@@ -7576,6 +7576,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  groundCheckRadius: 0.2
   minX: -16.5
   maxX: 16.5
   moveInput: 0

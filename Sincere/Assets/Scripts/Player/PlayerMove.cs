@@ -20,6 +20,7 @@ public class PlayerMove : MonoBehaviour
     public Transform groundCheck; // 바닥 감지 위치
     public float groundCheckDistance = 0.2f; // 바닥 감지 거리
     public LayerMask groundLayer; // 바닥 레이어
+    public float groundCheckRadius = 0.2f; // 바닥 감지 범위
 
     public float minX = 0f;     // 이동 제한 최소 X
     public float maxX = 100f;   // 이동 제한 최대 X
@@ -84,8 +85,7 @@ public class PlayerMove : MonoBehaviour
 
         // 바닥에 닿았을 때만 점프하도록 설정
         // 바닥 감지 - 플레이어 아래의 레이저가 바닥에 닿는지 아닌지 확인
-        RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayer);
-        isGrounded = hit.collider != null;
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
         // 디버그용 레이저 시각화
         Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, isGrounded ? Color.green : Color.red);
