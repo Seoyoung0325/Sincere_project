@@ -30,6 +30,12 @@ public class InvestObject : MonoBehaviour
         {
             Debug.LogWarning("Player 오브젝트가 할당되지 않았습니다!");
         }
+
+        // 이미 파괴된 오브젝트 삭제
+        if (DataManager.instance != null && DataManager.instance.IsObjectDestroyed(objectID))
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Update()
@@ -139,6 +145,13 @@ public class InvestObject : MonoBehaviour
                     //타입2 : 상호작용 시 대사창→단서 업데이트→맵의 오브젝트 삭제/수정
                     UpdateClue();
                     UpdateQuestion();
+
+                    // 파괴 기록
+                    if (DataManager.instance != null)
+                    {
+                        DataManager.instance.RegisterDestroyedObject(objectID);
+                    }
+
                     Destroy(gameObject);
                     break;
 

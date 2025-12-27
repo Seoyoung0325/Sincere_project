@@ -66,6 +66,7 @@ public class DataManager : MonoBehaviour
 
     public List<ClueData> acquiredClues = new List<ClueData>();
     public List<QuestionData> acquiredQuestions = new List<QuestionData>();
+    public List<string> investedObjects = new List<string>();
 
     public List<ObjectData> allObjects = new List<ObjectData>();
     public List<ClueData> allClues = new List<ClueData>();
@@ -160,7 +161,8 @@ public class DataManager : MonoBehaviour
         {
             player = player,
             acquiredClues = acquiredClues,
-            acquiredQuestions = acquiredQuestions
+            acquiredQuestions = acquiredQuestions,
+            investedObjects = investedObjects
         };
 
         string savedData = JsonUtility.ToJson(saveData, true);  //데이터 -> JSON으로 변환
@@ -183,6 +185,7 @@ public class DataManager : MonoBehaviour
             player = saveData.player;
             acquiredClues = saveData.acquiredClues;
             acquiredQuestions = saveData.acquiredQuestions;
+            investedObjects = saveData.investedObjects;
         }
     }
 
@@ -282,6 +285,23 @@ public class DataManager : MonoBehaviour
     public List<QuestionData> GetAcquiredQuestions()
     {
         return new List<QuestionData>(acquiredQuestions);
+    }
+
+
+    // 오브젝트 파괴 기록
+    public void RegisterDestroyedObject(string objectID)
+    {
+        if (!investedObjects.Contains(objectID))
+        {
+            investedObjects.Add(objectID);
+            Debug.Log($"{objectID} 오브젝트 파괴");
+        }
+    }
+
+    // 오브젝트가 파괴되었는지 확인
+    public bool IsObjectDestroyed(string objectID)
+    {
+        return investedObjects.Contains(objectID);
     }
 }
 
