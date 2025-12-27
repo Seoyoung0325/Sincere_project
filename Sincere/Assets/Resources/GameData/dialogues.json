@@ -1,0 +1,28 @@
+{
+  "dialogues": [
+    {
+      "dialogueID": "dialogue_001",
+      "characterName": ["캐릭터1","캐릭터2","캐릭터1"],
+      "characterSprite": ["Character/Standing01","Character/Standing02","Character/Standing01"],
+      "dialogue": ["오브젝트1 대사1","오브젝트1 대사2","오브젝트1 대사3"],
+      "clueTiming": 100,
+      "questionTiming": 100
+    },
+    {
+      "dialogueID": "dialogue_002",
+      "characterName": ["캐릭터1","캐릭터2","캐릭터1","캐릭터2"],
+      "characterSprite": ["Character/Standing01","Character/Standing02","Character/Standing01","Character/Standing02"],
+      "dialogue": ["오브젝트2 대사1","오브젝트2 대사2 with 단서","오브젝트2 대사3 with 의문점","오브젝트2 대사4"],
+      "clueTiming": 1,
+      "questionTiming": 2
+    },
+    {
+      "dialogueID": "dialogue_003",
+      "characterName": ["캐릭터2","캐릭터1","캐릭터2","캐릭터1"],
+      "characterSprite": ["Character/Standing02","Character/Standing01","Character/Standing02","Character/Standing01"],
+      "dialogue": ["오브젝트3 대사1","오브젝트3 대사2 with 의문점","오브젝트3 대사3 with 단서","오브젝트3 대사4"],
+      "clueTiming": 2,
+      "questionTiming": 1
+    }
+  ]
+}

@@ -30,6 +30,12 @@ public class InvestObject : MonoBehaviour
         {
             Debug.LogWarning("Player 오브젝트가 할당되지 않았습니다!");
         }
+
+        // 이미 파괴된 오브젝트 삭제
+        if (DataManager.instance != null && DataManager.instance.IsObjectDestroyed(objectID))
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Update()
@@ -88,12 +94,36 @@ public class InvestObject : MonoBehaviour
     {
         HideUI();
 
-        // 대화가 끝났을 때 호출될 콜백 설정
-        dialogue.SetOnDialogueEnd(OnDialogueEnd);
-        dialogue.StartDialogue();
+        // 대화 시작 (dialogueID 전달)
+        if (dialogue != null)
+        {
+            // 콜백 설정
+            dialogue.SetOnDialogueEnd(OnDialogueEnd);
+            dialogue.SetTimingCallbacks(OnClueTiming, OnQuestionTiming);
+
+            // JSON에서 dialogueID 가져오기
+            ObjectData objData = DataManager.instance.allObjects.Find(o => o.objectID == objectID);
+            if (objData != null && !string.IsNullOrEmpty(objData.dialogueID))
+            {
+                dialogue.StartDialogue(objData.dialogueID);
+            }
+        }
     }
 
-    
+
+    // 단서 습득 타이밍
+    private void OnClueTiming(int timing)
+    {
+        UpdateClue();
+    }
+
+    // 의문점 습득 타이밍
+    private void OnQuestionTiming(int timing)
+    {
+        UpdateQuestion();
+    }
+
+    // 대화 종료 타이밍
     private void OnDialogueEnd()
     {
         if (!string.IsNullOrEmpty(objectID))
@@ -114,12 +144,21 @@ public class InvestObject : MonoBehaviour
                 case "ClueAndDestroy":
                     //타입2 : 상호작용 시 대사창→단서 업데이트→맵의 오브젝트 삭제/수정
                     UpdateClue();
+                    UpdateQuestion();
+
+                    // 파괴 기록
+                    if (DataManager.instance != null)
+                    {
+                        DataManager.instance.RegisterDestroyedObject(objectID);
+                    }
+
                     Destroy(gameObject);
                     break;
 
                 case "ClueAndKeep":
                     //타입3 : 상호작용 시 대사창→단서 업데이트→맵의 오브젝트 유지
                     UpdateClue();
+                    UpdateQuestion();
                     break;
             }
         }
@@ -131,12 +170,26 @@ public class InvestObject : MonoBehaviour
     }
 
 
-    // 단서,의문점 업데이트
+    // 단서 업데이트
     private void UpdateClue()
     {
         if (!string.IsNullOrEmpty(objectID))
         {
             DataManager.instance.UpdateObjectClue(objectID);
+        }
+        else
+        {
+            Debug.Log("오브젝트ID 설정 안됨");
+            return;
+        }
+    }
+
+    // 의문점 업데이트
+    private void UpdateQuestion()
+    {
+        if (!string.IsNullOrEmpty(objectID))
+        {
+            DataManager.instance.UpdateObjectQuestion(objectID);
         }
         else
         {
