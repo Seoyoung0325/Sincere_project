@@ -276,13 +276,18 @@ public class DataManager : MonoBehaviour
 
 
 
-    // 의문점 습득
-    public void AddQuestion(QuestionData question)
+    // 의문점 습득 - 민채은 수정
+    public void AddQuestion(QuestionData questionID)
     {
-        if (!acquiredQuestions.Exists(q => q.questionID == question.questionID))
+        if (!acquiredQuestions.Contains(questionID))
         {
-            acquiredQuestions.Add(question);
-            print($"의문점 추가: {question.questionID}");
+            acquiredQuestions.Add(questionID);
+            print($"의문점 추가: {questionID}");
+
+            if (ClueUI.instance != null)
+            {   // UI 출력
+                ClueUI.instance.ShowQuestionNotification(questionID);
+            }
         }
     }
 
