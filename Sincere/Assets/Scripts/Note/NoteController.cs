@@ -65,6 +65,7 @@ public class NoteController : MonoBehaviour
         if (DataManager.instance != null)
         {
             List<ClueData> clues = DataManager.instance.GetAcquiredClues();
+            List<QuestionData> questions = DataManager.instance.GetAcquiredQuestions();
         }
         UpdateClueList();
         UpdateQuestionList();
