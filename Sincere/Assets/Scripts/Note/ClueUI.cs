@@ -13,7 +13,6 @@ public class ClueUI : MonoBehaviour
     public GameObject questionPanel;     // 의문점용 판넬
     public Text questionNameText;        // 의문점 UI 텍스트 
 
-    public float openDelay = 0.5f;       // 팝업 대기 시간
     public float displayTime = 1.0f;     // 화면 표출 시간
 
     private Coroutine clueRoutine;
@@ -70,10 +69,7 @@ public class ClueUI : MonoBehaviour
 
     IEnumerator ShowAndHideSequence(GameObject targetPanel)
     {
-        // 팝업 대기
-        yield return new WaitForSeconds(openDelay);
-
-        // 패널 켜기
+        // 패널 켜기 
         targetPanel.SetActive(true);
 
         // 표시 시간 유지
