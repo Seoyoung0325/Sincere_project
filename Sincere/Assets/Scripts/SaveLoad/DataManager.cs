@@ -253,13 +253,18 @@ public class DataManager : MonoBehaviour
 
 
 
-    // 단서 습득
-    public void AddClue(ClueData clue)
+    // 단서 습득 - 민채은 수정
+    public void AddClue(ClueData clueID)
     {
-        if (!acquiredClues.Exists(c => c.clueID == clue.clueID))
+        if (!acquiredClues.Contains(clueID))
         {
-            acquiredClues.Add(clue);
-            print($"단서 추가: {clue.clueID}");
+            acquiredClues.Add(clueID);
+            print($"단서 추가: {clueID}");
+
+            if (ClueUI.instance != null)
+            {   // UI 출력
+                ClueUI.instance.ShowNotification(clueID);
+            }
         }
     }
 
@@ -271,13 +276,18 @@ public class DataManager : MonoBehaviour
 
 
 
-    // 의문점 습득
-    public void AddQuestion(QuestionData question)
+    // 의문점 습득 - 민채은 수정
+    public void AddQuestion(QuestionData questionID)
     {
-        if (!acquiredQuestions.Exists(q => q.questionID == question.questionID))
+        if (!acquiredQuestions.Contains(questionID))
         {
-            acquiredQuestions.Add(question);
-            print($"의문점 추가: {question.questionID}");
+            acquiredQuestions.Add(questionID);
+            print($"의문점 추가: {questionID}");
+
+            if (ClueUI.instance != null)
+            {   // UI 출력
+                ClueUI.instance.ShowQuestionNotification(questionID);
+            }
         }
     }
 

@@ -80,8 +80,7 @@ public class Dialogue : MonoBehaviour
     //다음 대사로
     public void NextDialogue()
     {
-        currentDialogueIndex++;
-
+        // 민채은 - 수정
         // 현재 대사 인덱스가 단서 타이밍과 일치하면
         if (currentDialogueData.clueTiming == currentDialogueIndex)
         {
@@ -93,6 +92,9 @@ public class Dialogue : MonoBehaviour
         {
             OnQuestionTimingCallback?.Invoke(currentDialogueIndex);
         }
+
+        // 현재 보고 있는 대사가 단서/의문점 타이밍인지 확인한 후 인덱스 증가
+        currentDialogueIndex++;
 
         if (currentDialogueIndex >= currentDialogueData.dialogue.Length)
         {
