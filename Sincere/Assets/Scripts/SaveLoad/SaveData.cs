@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+
 
 public class SaveData : MonoBehaviour
 {
@@ -40,7 +42,26 @@ public class SaveData : MonoBehaviour
         if (slotPanel != null)
         {
             slotPanel.gameObject.SetActive(true);
-            slotPanel.SetupForSave();  //저장 모드
+            slotPanel.SetupForSave(OnSaveComplete);  //저장 모드
         }
+    }
+
+
+    // 슬롯 선택 완료 후
+    private void OnSaveComplete()
+    {
+        StartCoroutine(SaveWithScreenshot());
+    }
+
+    // 스크린샷 찍고 저장
+    private IEnumerator SaveWithScreenshot()
+    {
+        // 스크린샷 찍기
+        yield return StartCoroutine(DataManager.instance.CaptureScreenshotCoroutine());
+
+        // 데이터 저장
+        DataManager.instance.SaveData();
+
+        Debug.Log("저장 완료");
     }
 }
