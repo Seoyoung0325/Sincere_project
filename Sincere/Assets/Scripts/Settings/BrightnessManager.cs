@@ -6,24 +6,25 @@ using TMPro;
 
 public class BrightnessManager : MonoBehaviour
 {
-    public static BrightnessManager instance;
+    public static BrightnessManager Instance { get; private set; }
 
+    [Header("UI References")]
+    public TextMeshProUGUI brightnessText;
+
+    [Header("Post Processing")]
     public Volume postProcessingVolume;
     private ColorAdjustments colorAdjustments;
 
-    public Button leftButton;              // 왼쪽 버튼
-    public Button rightButton;             // 오른쪽 버튼
-    public TextMeshProUGUI brightnessText; // 현재 단계 표시용
-
-    // 밝기 단계 (1~4)
-    private readonly float[] brightnessLevels = { 0.0f, 0.33f, 0.66f, 0.75f };
-    private int currentIndex = 1; // 기본값: 2단계
+    // 밝기 단계 (0~3)
+    private readonly float[] brightnessLevels = { 0.0f, 0.25f, 0.5f, 0.75f };
+    private int currentIndex = 0; // 기본값: 첫 번째 단계
 
     private void Awake()
     {
-        if (instance == null)
+        // 싱글톤 보장
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
 
             if (postProcessingVolume != null)
@@ -32,8 +33,8 @@ public class BrightnessManager : MonoBehaviour
 
                 if (postProcessingVolume.profile.TryGet(out colorAdjustments))
                 {
-                    float savedBrightness = PlayerPrefs.GetFloat("Brightness", 0.33f);
-                    currentIndex = FindClosestIndex(savedBrightness);
+                    // 저장된 인덱스 불러오기 (없으면 0)
+                    currentIndex = PlayerPrefs.GetInt("BrightnessIndex", 0);
                     ApplyBrightness();
                 }
             }
@@ -41,24 +42,21 @@ public class BrightnessManager : MonoBehaviour
             {
                 Debug.LogWarning("PostProcessing Volume이 연결되지 않았습니다.");
             }
-
-            // 버튼 이벤트 연결
-            if (leftButton != null) leftButton.onClick.AddListener(OnLeftClick);
-            if (rightButton != null) rightButton.onClick.AddListener(OnRightClick);
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(gameObject); // 중복 방지
         }
     }
 
-    private void OnLeftClick()
+    // Inspector에서 Button OnClick 이벤트로 직접 연결
+    public void OnLeftClick()
     {
         currentIndex = (currentIndex - 1 + brightnessLevels.Length) % brightnessLevels.Length;
         ApplyBrightness();
     }
 
-    private void OnRightClick()
+    public void OnRightClick()
     {
         currentIndex = (currentIndex + 1) % brightnessLevels.Length;
         ApplyBrightness();
@@ -69,27 +67,22 @@ public class BrightnessManager : MonoBehaviour
         if (colorAdjustments != null)
         {
             float value = brightnessLevels[currentIndex];
+            // postExposure 값은 -2 ~ 2 범위에서 보정
             colorAdjustments.postExposure.value = Mathf.Lerp(-2f, 2f, value);
-            PlayerPrefs.SetFloat("Brightness", value);
 
+            // 인덱스로 저장
+            PlayerPrefs.SetInt("BrightnessIndex", currentIndex);
+            PlayerPrefs.Save();
+
+            // 텍스트 표시
             if (brightnessText != null)
-                brightnessText.text = $"{currentIndex + 1}";
-        }
-    }
-
-    private int FindClosestIndex(float value)
-    {
-        int closest = 0;
-        float minDiff = Mathf.Abs(brightnessLevels[0] - value);
-        for (int i = 1; i < brightnessLevels.Length; i++)
-        {
-            float diff = Mathf.Abs(brightnessLevels[i] - value);
-            if (diff < minDiff)
             {
-                minDiff = diff;
-                closest = i;
+                brightnessText.text = $"밝기 {currentIndex + 1}/{brightnessLevels.Length}";
+                // 또는 퍼센트로 표시하고 싶으면:
+                // brightnessText.text = $"{Mathf.RoundToInt(value * 100)}%";
             }
+
+            Debug.Log($"현재 인덱스: {currentIndex}, 밝기값: {value}");
         }
-        return closest;
     }
 }

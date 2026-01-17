@@ -23,13 +23,13 @@ public class ScriptSpeedManager : MonoBehaviour
         ApplySpeed();
     }
 
-    private void OnLeftClick()
+    public void OnLeftClick()
     {
         currentIndex = (currentIndex - 1 + speedLevels.Length) % speedLevels.Length;
         ApplySpeed();
     }
 
-    private void OnRightClick()
+    public void OnRightClick()
     {
         currentIndex = (currentIndex + 1) % speedLevels.Length;
         ApplySpeed();

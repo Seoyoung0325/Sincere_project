@@ -486,7 +486,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 97118909}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1715610506}
+        m_TargetAssemblyTypeName: ResolutionManager, Assembly-CSharp
+        m_MethodName: OnLeftClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &185058648
 GameObject:
   m_ObjectHideFlags: 0
@@ -498,6 +510,8 @@ GameObject:
   - component: {fileID: 185058650}
   - component: {fileID: 185058649}
   - component: {fileID: 185058651}
+  - component: {fileID: 185058652}
+  - component: {fileID: 185058653}
   m_Layer: 0
   m_Name: SettingManager
   m_TagString: Untagged
@@ -547,6 +561,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 775cc329609489b47a7dccc2e838d417, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &185058652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185058648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 497f6bb03a874584a900e4ae8cc42ffd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuLabels:
+  - {fileID: 1878113468}
+  - {fileID: 1363784545}
+  - {fileID: 311135547}
+  - {fileID: 1275568281}
+  - {fileID: 1440140092}
+  - {fileID: 1234782751}
+  screenModeLeftButton: {fileID: 773618252}
+  screenModeRightButton: {fileID: 1806786525}
+  resolutionLeftButton: {fileID: 97118911}
+  resolutionRightButton: {fileID: 1442979607}
+  brightnessLeftButton: {fileID: 270888293}
+  brightnessRightButton: {fileID: 1837216917}
+  scriptSpeedLeftButton: {fileID: 272119715}
+  scriptSpeedRightButton: {fileID: 891760421}
+  bgmSlider: {fileID: 2116275666}
+  effectSlider: {fileID: 528845430}
+--- !u!114 &185058653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185058648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ab4ee2513d53c042a8f0008bb678c4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuTexts: []
+  selectedColor: {r: 0, g: 0, b: 0, a: 1}
+  defaultColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!1 &233012964
 GameObject:
   m_ObjectHideFlags: 0
@@ -814,7 +872,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 270888294}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 880262830}
+        m_TargetAssemblyTypeName: BrightnessManager, Assembly-CSharp
+        m_MethodName: OnLeftClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &270888294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -934,7 +1004,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 272119716}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 631689930}
+        m_TargetAssemblyTypeName: ScriptSpeedManager, Assembly-CSharp
+        m_MethodName: OnLeftClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &272119716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1816,7 +1898,7 @@ GameObject:
   - component: {fileID: 528845429}
   - component: {fileID: 528845430}
   m_Layer: 5
-  m_Name: EffectsVolume (1)
+  m_Name: EffectsVolume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1857,7 +1939,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1894,7 +1976,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1967732491}
+        m_TargetAssemblyTypeName: EffectSoundManager, Assembly-CSharp
+        m_MethodName: OnSliderChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &537507926
 GameObject:
   m_ObjectHideFlags: 0
@@ -2871,10 +2965,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afd68f36741d1f543955a05f124f0e33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  postProcessingVolume: {fileID: 1522224514}
-  leftButton: {fileID: 270888293}
-  rightButton: {fileID: 1837216917}
   brightnessText: {fileID: 345671071}
+  postProcessingVolume: {fileID: 1522224514}
 --- !u!4 &880262831
 Transform:
   m_ObjectHideFlags: 0
@@ -2971,7 +3063,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 891760422}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 631689930}
+        m_TargetAssemblyTypeName: ScriptSpeedManager, Assembly-CSharp
+        m_MethodName: OnRightClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &891760422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4960,7 +5064,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1442979608}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1715610506}
+        m_TargetAssemblyTypeName: ResolutionManager, Assembly-CSharp
+        m_MethodName: OnRightClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1442979608
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6160,7 +6276,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1837216918}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 880262830}
+        m_TargetAssemblyTypeName: BrightnessManager, Assembly-CSharp
+        m_MethodName: OnRightClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1837216918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6847,7 +6975,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -6884,7 +7012,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1967732490}
+        m_TargetAssemblyTypeName: BgmManager, Assembly-CSharp
+        m_MethodName: OnSliderChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2131227553
 GameObject:
   m_ObjectHideFlags: 0

@@ -42,7 +42,7 @@ public class EffectSoundManager : MonoBehaviour
         }
     }
 
-    private void OnSliderChanged(float value)
+    public void OnSliderChanged(float value)
     {
         int intValue = Mathf.RoundToInt(value);
 

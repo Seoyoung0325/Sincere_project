@@ -43,12 +43,12 @@ public class ScreenModeManager : MonoBehaviour
         Debug.Log("화면 모드 변경: 전체 화면");
     }
 
-    private void ApplyScreenMode()
+    public void ApplyScreenMode()
     {
         Screen.fullScreen = isFullScreen;
     }
 
-    private void UpdateButtonVisuals()
+    public void UpdateButtonVisuals()
     {
         // 버튼 색상으로 현재 모드 표시
         Color selected = new Color(0.8f, 0.8f, 0.8f, 1f);

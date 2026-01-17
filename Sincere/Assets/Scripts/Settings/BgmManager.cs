@@ -29,7 +29,7 @@ public class BgmManager : MonoBehaviour
         UpdateVolumeText(savedValue);
     }
 
-    private void OnSliderChanged(float value)
+    public void OnSliderChanged(float value)
     {
         int intValue = Mathf.RoundToInt(value);
 
