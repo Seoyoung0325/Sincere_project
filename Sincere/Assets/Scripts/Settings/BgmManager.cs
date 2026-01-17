@@ -1,48 +1,66 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class BgmManager : MonoBehaviour
 {
-    // public AudioSource bgmSource; // 아직 오디오 소스가 없으므로 주석 처리
-    private static BgmManager instance; // 싱글톤 인스턴스
+    public Slider bgmSlider;          // BGM 조절용 슬라이더
+    public TextMeshProUGUI volumeText; // 현재 볼륨 표시
+    //public AudioSource bgmSource;      // BGM 오디오 소스
 
-    void Awake()
+    private void Awake()
     {
-        // 싱글톤 패턴: 최초 생성된 인스턴스만 유지
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject); // 씬 전환 시에도 오브젝트 유지
+        // 게임 내내 유지
+        DontDestroyOnLoad(gameObject);
 
-            // 저장된 볼륨 값 불러와서 적용
-            float savedVolume = PlayerPrefs.GetFloat("BgmVolume", 0.5f);
+        // 슬라이더 기본 설정
+        bgmSlider.minValue = 0;
+        bgmSlider.maxValue = 10;
+        bgmSlider.wholeNumbers = true; // 정수만 선택 가능
 
-            // 오디오 소스가 있을 경우 볼륨 적용 (현재는 주석 처리)
-            // if (bgmSource != null)
-            //     bgmSource.volume = savedVolume;
-        }
-        else
+        // 저장된 값 불러오기
+        int savedValue = PlayerPrefs.GetInt("BGMVolume", 5);
+        bgmSlider.value = savedValue;
+
+        // 값 변경 이벤트 연결
+        bgmSlider.onValueChanged.AddListener(OnSliderChanged);
+
+        // 초기 텍스트 갱신
+        UpdateVolumeText(savedValue);
+    }
+
+    private void OnSliderChanged(float value)
+    {
+        int intValue = Mathf.RoundToInt(value);
+
+        // 로그 출력
+        Debug.Log($"BGM 볼륨 변경: {intValue}");
+
+        // 적용 (아직 오디오가 없으므로 주석 처리)
+     /* AudioSource bgmSource = GetComponent<AudioSource>();
+        if (bgmSource != null)
         {
-            // 중복 생성 방지
-            Destroy(gameObject);
+            bgmSource.volume = intValue / 10f; 
+        }*/
+
+        // 값 저장
+        PlayerPrefs.SetInt("BGMVolume", intValue);
+        PlayerPrefs.Save();
+
+        // 텍스트 갱신
+        UpdateVolumeText(intValue);
+    }
+
+    private void UpdateVolumeText(int value)
+    {
+        if (volumeText != null)
+        {
+            volumeText.text = $"{value}";
         }
     }
 
-    // 외부에서 볼륨 설정을 전달받는 함수
-    public void SetVolume(float value)
+    public int GetCurrentVolume()
     {
-        // if (bgmSource != null)
-        //     bgmSource.volume = value;
-
-        PlayerPrefs.SetFloat("BgmVolume", value); // 설정값 저장
-    }
-
-    // 외부에서 BGM을 재생할 때 사용하는 함수
-    public void PlayBgm(AudioClip clip)
-    {
-        // if (bgmSource != null)
-        // {
-        //     bgmSource.clip = clip;
-        //     bgmSource.Play();
-        // }
+        return Mathf.RoundToInt(bgmSlider.value);
     }
 }

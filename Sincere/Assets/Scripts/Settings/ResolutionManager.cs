@@ -1,58 +1,84 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class ResolutionManager : MonoBehaviour
 {
-    private static ResolutionManager instance;
+    public TextMeshProUGUI resolutionText;
+    public Button leftButton;     // ì™¼ìª½ ë²„íŠ¼
+    public Button rightButton;    // ì˜¤ë¥¸ìª½ ë²„íŠ¼
 
-    // ÇöÀç ¼±ÅÃµÈ ÇØ»óµµ ÀÎµ¦½º
-    public int currentResolutionIndex;
+    // ì§€ì›í•˜ëŠ” í•´ìƒë„ ëª©ë¡
+    private Vector2Int[] resolutionSizes = {
+        new Vector2Int(1280, 720),
+        new Vector2Int(1600, 900),
+        new Vector2Int(1920, 1080),
+        new Vector2Int(2560, 1440)
+    };
 
-    // ÇöÀç ¼±ÅÃµÈ È­¸é ¸ðµå (ÀüÃ¼ È­¸é, Ã¢ ¸ðµå µî)
-    public FullScreenMode currentScreenMode;
+    // í˜„ìž¬ ì„ íƒëœ í•´ìƒë„ ì¸ë±ìŠ¤
+    private int currentIndex = 2; // ê¸°ë³¸ê°’: 1920x1080
 
-    void Awake()
+    private void Awake()
     {
-        // ÇÏ³ª¸¸ À¯ÁöÇÏ°í Áßº¹ »ý¼º ¹æÁö
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject); // ¾À ÀüÈ¯ ½Ã¿¡µµ ¿ÀºêÁ§Æ® À¯Áö
+        // ê²Œìž„ ë‚´ë‚´ ìœ ì§€
+        DontDestroyOnLoad(gameObject);
 
-            // ÀúÀåµÈ ¼³Á¤ ºÒ·¯¿À±â (±âº»°ª: ÇØ»óµµ 0¹ø, ÀüÃ¼ È­¸é Ã¢)
-            currentResolutionIndex = PlayerPrefs.GetInt("ResolutionIndex", 0);
-            currentScreenMode = (FullScreenMode)PlayerPrefs.GetInt("ScreenMode", (int)FullScreenMode.FullScreenWindow);
+        // ì €ìž¥ëœ ì„¤ì • ë¶ˆëŸ¬ì˜¤ê¸° (ì—†ìœ¼ë©´ ê¸°ë³¸ê°’ ì‚¬ìš©)
+        currentIndex = PlayerPrefs.GetInt("ResolutionIndex", 2);
 
-            // ÇØ»óµµ ¹× È­¸é ¸ðµå Àû¿ë
-            ApplyResolution(currentResolutionIndex, currentScreenMode);
-        }
-        else
-        {
-            Destroy(gameObject); // Áßº¹ Á¦°Å
-        }
+        // ë²„íŠ¼ ì´ë²¤íŠ¸ ì—°ê²°
+        leftButton.onClick.AddListener(OnLeftClick);
+        rightButton.onClick.AddListener(OnRightClick);
+
+        // í•´ìƒë„ ì ìš©
+        ApplyResolution();
+        UpdateText();
     }
 
-    // ÇØ»óµµ ¹× È­¸é ¸ðµå Àû¿ë ÇÔ¼ö
-    public void ApplyResolution(int resolutionIndex, FullScreenMode screenMode)
+    private void OnLeftClick()
     {
-        Resolution[] resolutions = Screen.resolutions;
+        // ì™¼ìª½ ë²„íŠ¼ í´ë¦­ ì‹œ í•´ìƒë„ ì¸ë±ìŠ¤ ê°ì†Œ
+        currentIndex = (currentIndex - 1 + resolutionSizes.Length) % resolutionSizes.Length;
+        ApplyResolution();
+        SaveSettings();
+        UpdateText();
+    }
 
-        // À¯È¿ÇÑ ÀÎµ¦½ºÀÎÁö È®ÀÎ
-        if (resolutionIndex >= 0 && resolutionIndex < resolutions.Length)
+    private void OnRightClick()
+    {
+        // ì˜¤ë¥¸ìª½ ë²„íŠ¼ í´ë¦­ ì‹œ í•´ìƒë„ ì¸ë±ìŠ¤ ì¦ê°€
+        currentIndex = (currentIndex + 1) % resolutionSizes.Length;
+        ApplyResolution();
+        SaveSettings();
+        UpdateText();
+    }
+
+    private void ApplyResolution()
+    {
+        // í•´ìƒë„ ì ìš© 
+        var res = resolutionSizes[currentIndex];
+        Screen.SetResolution(res.x, res.y, Screen.fullScreen);
+
+        Debug.Log($"í•´ìƒë„ ë³€ê²½: {res.x}x{res.y}");
+    }
+
+    private void SaveSettings()
+    {
+        // í˜„ìž¬ ì„¤ì • ì €ìž¥
+        PlayerPrefs.SetInt("ResolutionIndex", currentIndex);
+        PlayerPrefs.Save();
+    }
+
+    private void UpdateText()
+    {
+        // UI í…ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸
+        if (resolutionText != null)
         {
-            Resolution res = resolutions[resolutionIndex];
-
-            // ½ÇÁ¦ ÇØ»óµµ ¹× È­¸é ¸ðµå Àû¿ë
-            Screen.SetResolution(res.width, res.height, screenMode);
-
-            // ÇöÀç ¼³Á¤ ÀúÀå
-            currentResolutionIndex = resolutionIndex;
-            currentScreenMode = screenMode;
-
-            // PlayerPrefs¿¡ ÀúÀå
-            PlayerPrefs.SetInt("ResolutionIndex", resolutionIndex);
-            PlayerPrefs.SetInt("ScreenMode", (int)screenMode);
+            var res = resolutionSizes[currentIndex];
+            resolutionText.text = res.x + "x" + res.y;
         }
     }
 }
