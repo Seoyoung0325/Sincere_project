@@ -77,7 +77,7 @@ public class BrightnessManager : MonoBehaviour
             // 텍스트 표시
             if (brightnessText != null)
             {
-                brightnessText.text = $"밝기 {currentIndex + 1}/{brightnessLevels.Length}";
+                brightnessText.text = $"{currentIndex + 1}";
                 // 또는 퍼센트로 표시하고 싶으면:
                 // brightnessText.text = $"{Mathf.RoundToInt(value * 100)}%";
             }
