@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class SettingsKeyboardController : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class SettingsKeyboardController : MonoBehaviour
 
     void Start()
     {
+        currentMenuIndex = 0;
         HighlightCurrentMenu();
     }
 
@@ -126,5 +128,11 @@ public class SettingsKeyboardController : MonoBehaviour
             else
                 menuLabels[i].color = Color.grey;
         }
+    }
+
+    public void OnMenuClicked(int index)
+    {
+        currentMenuIndex = index;
+        HighlightCurrentMenu();
     }
 }
