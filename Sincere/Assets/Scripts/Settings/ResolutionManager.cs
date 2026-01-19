@@ -1,58 +1,76 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+ï»¿using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using System.Linq;
 
 public class ResolutionManager : MonoBehaviour
 {
-    private static ResolutionManager instance;
+    public TextMeshProUGUI resolutionText;
+    public Button leftButton;
+    public Button rightButton;
 
-    // ÇöÀç ¼±ÅÃµÈ ÇØ»óµµ ÀÎµ¦½º
-    public int currentResolutionIndex;
+    private Resolution[] supportedResolutions;
+    private int currentIndex = 0;
 
-    // ÇöÀç ¼±ÅÃµÈ È­¸é ¸ðµå (ÀüÃ¼ È­¸é, Ã¢ ¸ðµå µî)
-    public FullScreenMode currentScreenMode;
-
-    void Awake()
+    private void Awake()
     {
-        // ÇÏ³ª¸¸ À¯ÁöÇÏ°í Áßº¹ »ý¼º ¹æÁö
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject); // ¾À ÀüÈ¯ ½Ã¿¡µµ ¿ÀºêÁ§Æ® À¯Áö
+        // ì¶”í›„ ì¼ë¶€ í•´ìƒë„ë§Œ ì¶”ë¦´ ì˜ˆì •
+        supportedResolutions = Screen.resolutions
+            .GroupBy(r => new { r.width, r.height }) // ì¤‘ë³µ ì œê±°
+            .Select(g => g.First())
+            .ToArray();
 
-            // ÀúÀåµÈ ¼³Á¤ ºÒ·¯¿À±â (±âº»°ª: ÇØ»óµµ 0¹ø, ÀüÃ¼ È­¸é Ã¢)
-            currentResolutionIndex = PlayerPrefs.GetInt("ResolutionIndex", 0);
-            currentScreenMode = (FullScreenMode)PlayerPrefs.GetInt("ScreenMode", (int)FullScreenMode.FullScreenWindow);
-
-            // ÇØ»óµµ ¹× È­¸é ¸ðµå Àû¿ë
-            ApplyResolution(currentResolutionIndex, currentScreenMode);
-        }
-        else
+        foreach (var r in supportedResolutions)
         {
-            Destroy(gameObject); // Áßº¹ Á¦°Å
+            Debug.Log($"{r.width} x {r.height} @ {r.refreshRateRatio.value}Hz");
         }
+
+        // ì €ìž¥ëœ ê°’ ë¶ˆëŸ¬ì˜¤ê¸°
+        currentIndex = Mathf.Clamp(PlayerPrefs.GetInt("ResolutionIndex", 0), 0, supportedResolutions.Length - 1);
+
+        // ë²„íŠ¼ ì´ë²¤íŠ¸ ì—°ê²°
+        leftButton.onClick.AddListener(OnLeftClick);
+        rightButton.onClick.AddListener(OnRightClick);
+
+        ApplyResolution();
+        UpdateText();
     }
 
-    // ÇØ»óµµ ¹× È­¸é ¸ðµå Àû¿ë ÇÔ¼ö
-    public void ApplyResolution(int resolutionIndex, FullScreenMode screenMode)
+    public void OnLeftClick()
     {
-        Resolution[] resolutions = Screen.resolutions;
+        currentIndex = (currentIndex - 1 + supportedResolutions.Length) % supportedResolutions.Length;
+        ApplyResolution();
+        SaveSettings();
+        UpdateText();
+    }
 
-        // À¯È¿ÇÑ ÀÎµ¦½ºÀÎÁö È®ÀÎ
-        if (resolutionIndex >= 0 && resolutionIndex < resolutions.Length)
+    public void OnRightClick()
+    {
+        currentIndex = (currentIndex + 1) % supportedResolutions.Length;
+        ApplyResolution();
+        SaveSettings();
+        UpdateText();
+    }
+
+    private void ApplyResolution()
+    {
+        var res = supportedResolutions[currentIndex];
+        Screen.SetResolution(res.width, res.height, Screen.fullScreen);
+        Debug.Log($"í•´ìƒë„ ë³€ê²½: {res.width}x{res.height}");
+    }
+
+    private void SaveSettings()
+    {
+        PlayerPrefs.SetInt("ResolutionIndex", currentIndex);
+        PlayerPrefs.Save();
+    }
+
+    private void UpdateText()
+    {
+        if (resolutionText != null)
         {
-            Resolution res = resolutions[resolutionIndex];
-
-            // ½ÇÁ¦ ÇØ»óµµ ¹× È­¸é ¸ðµå Àû¿ë
-            Screen.SetResolution(res.width, res.height, screenMode);
-
-            // ÇöÀç ¼³Á¤ ÀúÀå
-            currentResolutionIndex = resolutionIndex;
-            currentScreenMode = screenMode;
-
-            // PlayerPrefs¿¡ ÀúÀå
-            PlayerPrefs.SetInt("ResolutionIndex", resolutionIndex);
-            PlayerPrefs.SetInt("ScreenMode", (int)screenMode);
+            var res = supportedResolutions[currentIndex];
+            resolutionText.text = $"{res.width} x {res.height}";
         }
     }
 }
