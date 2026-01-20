@@ -8,7 +8,8 @@ public class SelectSlot : MonoBehaviour
 {
     public Button[] slotButtons;  //슬롯버튼 배열
     public Text[] blankTexts;  //빈 슬롯버튼의 텍스트 배열
-    public Image[] mapImages;  //저장된 슬롯버튼의 맵이미지 배열
+    public Image[] mapImages;  //저장된 슬롯버튼의 맵 이미지 배열
+    public Image[] TimeImages;  //저장된 슬롯버튼의 시간대 이미지 배열
     public Text[] mapTexts;  //저장된 슬롯버튼의 맵 텍스트 배열
     public Text[] timeTexts;  //저장된 슬롯버튼의 플탐 텍스트 배열
 
@@ -52,6 +53,7 @@ public class SelectSlot : MonoBehaviour
                 if (tempData != null)
                 {
                     mapImages[i].gameObject.SetActive(true);
+                    TimeImages[i].gameObject.SetActive(true);
                     mapTexts[i].gameObject.SetActive(true);
                     timeTexts[i].gameObject.SetActive(true);
                     blankTexts[i].gameObject.SetActive(false);
@@ -63,6 +65,7 @@ public class SelectSlot : MonoBehaviour
                 else
                 {
                     mapImages[i].color = Color.red;
+                    TimeImages[i].color = Color.green;
                     mapTexts[i].text = "오류 발생";
                     timeTexts[i].text = "오류 발생";
                 }
@@ -76,6 +79,7 @@ public class SelectSlot : MonoBehaviour
                 saveFile[i] = false;  //해당 슬롯 번호의 bool값 true로
 
                 mapImages[i].gameObject.SetActive(false);
+                TimeImages[i].gameObject.SetActive(false);
                 mapTexts[i].gameObject.SetActive(false);
                 timeTexts[i].gameObject.SetActive(false);
                 blankTexts[i].gameObject.SetActive(true);
