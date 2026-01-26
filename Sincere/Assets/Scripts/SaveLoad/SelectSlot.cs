@@ -6,18 +6,35 @@ using System.Collections;
 
 public class SelectSlot : MonoBehaviour
 {
+    [Header("슬롯 UI")]
+    public GameObject loadingSlot;
     public Button[] slotButtons;  //슬롯버튼 배열
     public Text[] blankTexts;  //빈 슬롯버튼의 텍스트 배열
     public Image[] mapImages;  //저장된 슬롯버튼의 맵 이미지 배열
     public Image[] TimeImages;  //저장된 슬롯버튼의 시간대 이미지 배열
     public Text[] mapTexts;  //저장된 슬롯버튼의 맵 텍스트 배열
     public Text[] timeTexts;  //저장된 슬롯버튼의 플탐 텍스트 배열
+    public Outline[] slotOutlines;  //슬롯 테두리
+
+    [Header("추가 버튼")]
+    public Button saveActionButton;  // 저장하기 버튼
+    public Button loadActionButton;  // 불러오기 버튼
+    public Button cancelActionButton;  // 취소 버튼
+
+    [Header("팝업 UI")]
+    public GameObject confirmPopup;  // 확인 팝업 패널
+    public Text confirmText;  // 확인 메시지 텍스트
+    public Button confirmYesButton;  // 예 버튼
+    public Button confirmNoButton;  // 아니오 버튼
 
     bool[] saveFile = new bool[3];  //슬롯별 세이브파일 존재유무
-    private System.Action<int> onSlotSelected;  // 슬롯 선택 시 실행할 함수
+    private System.Action onActionComplete;  // 완료 시 실행할 콜백
     private bool isForLoading = false;  // 불러오기 모드인지 여부
+    private int selectedSlotNumber = -1;  // 현재 선택된 슬롯 번호
+    private bool isSaveMode = false;  // 저장 모드인지 여부
 
-    private void Start()
+
+    private void Awake()
     {
         // DataManager 체크
         if (DataManager.instance == null)
@@ -29,13 +46,261 @@ public class SelectSlot : MonoBehaviour
         // 버튼 클릭 이벤트 등록
         for (int i = 0; i < slotButtons.Length; i++)
         {
-            int slotNumber = i;  //클로저 문제 방지
-            slotButtons[i].onClick.AddListener(() => Slot(slotNumber));
+            int slotNumber = i;
+            slotButtons[i].onClick.AddListener(() => OnSlotClicked(slotNumber));
         }
 
+
+        // 액션 버튼 이벤트 등록
+        if (saveActionButton != null)
+        {
+            saveActionButton.onClick.RemoveAllListeners();
+            saveActionButton.onClick.AddListener(OnSaveActionClicked);
+        }
+
+        if (loadActionButton != null)
+            loadActionButton.onClick.AddListener(OnLoadActionClicked);
+
+        if (cancelActionButton != null)
+            cancelActionButton.onClick.AddListener(OnCancelActionClicked);
+
+        // 확인 팝업 버튼 이벤트 등록
+        if (confirmYesButton != null)
+            confirmYesButton.onClick.AddListener(OnConfirmYes);
+
+        if (confirmNoButton != null)
+            confirmNoButton.onClick.AddListener(OnConfirmNo);
+
+        // 초기 상태 설정
+        confirmPopup.SetActive(false);
+
         // 첫 시작 시 슬롯 정보 업데이트
+        HideAllOutlines();
         UpdateSlotUI();
     }
+
+
+    //// 1. 슬롯 클릭
+    private void OnSlotClicked(int slotNumber)
+    {
+        selectedSlotNumber = slotNumber;
+        DataManager.instance.slot = slotNumber;
+
+        Debug.Log($"슬롯 {slotNumber} 선택됨");
+
+        HideAllOutlines();
+
+        // 선택된 슬롯 테두리만 켜기
+        if (slotOutlines != null && slotNumber < slotOutlines.Length && slotOutlines[slotNumber] != null)
+        {
+            slotOutlines[slotNumber].enabled = true;
+        }
+    }
+
+    // 모든 슬롯 테두리 끄기
+    private void HideAllOutlines()
+    {
+        for (int i = 0; i < slotOutlines.Length; i++)
+        {
+            if (slotOutlines[i] != null)
+            {
+                slotOutlines[i].enabled = false;
+            }
+        }
+    }
+
+
+    //// 2-1. 저장하기 버튼 클릭
+    private void OnSaveActionClicked()
+    {
+        Debug.Log("저장클릭");
+        if (selectedSlotNumber < 0)
+        {
+            Debug.LogError("슬롯이 선택되지 않았습니다!");
+            return;
+        }
+
+        // 확인 팝업 표시
+        string message = $"이 파일을 덮어쓰시겠습니까?";
+        ShowConfirmPopup(message, true);  // true = 저장 모드
+    }
+
+
+    //// 2-2. 불러오기 버튼 클릭
+    private void OnLoadActionClicked()
+    {
+        Debug.Log("불러오기클릭");
+        if (selectedSlotNumber < 0)
+        {
+            Debug.LogError("슬롯이 선택되지 않았습니다!");
+            return;
+        }
+
+        // 세이브 파일이 없으면 불러오기 불가
+        if (!saveFile[selectedSlotNumber])
+        {
+            Debug.LogWarning($"슬롯 {selectedSlotNumber}에 데이터가 없습니다!");
+            return;
+        }
+
+        // 확인 팝업 표시
+        string message = $"이 파일을 불러오시겠습니까?";
+        ShowConfirmPopup(message, false);  // false = 불러오기 모드
+    }
+
+
+    // 뒤로가기 버튼 클릭
+    private void OnCancelActionClicked()
+    {
+        selectedSlotNumber = -1;
+        if (loadingSlot != null)
+            loadingSlot.SetActive(false);
+    }
+
+
+
+    //// 3-1. 확인 팝업에서 "예" 클릭
+    private void OnConfirmYes()
+    {
+        Debug.Log("예");
+        HideConfirmPopup();
+
+        if (isSaveMode)
+        {
+            // 4단계: 저장 실행
+            Debug.Log("저장 실행");
+            ExecuteSave();
+        }
+        else
+        {
+            // 4단계: 불러오기 실행
+            Debug.Log("불러오기 실행");
+            ExecuteLoad();
+        }
+    }
+
+    //// 3-1. 확인 팝업에서 "아니요" 클릭
+    private void OnConfirmNo()
+    {
+        Debug.Log("아니요");
+        HideConfirmPopup();
+    }
+
+
+
+    //// 4-1. 실제 저장 실행
+    private void ExecuteSave()
+    {
+        Debug.Log($"슬롯 {selectedSlotNumber}에 저장 중...");
+
+        DataManager.instance.slot = selectedSlotNumber;
+
+        // 패널 닫기
+        gameObject.SetActive(false);
+
+        // 완료 콜백 실행 (SaveData.cs에서 스크린샷과 함께 저장)
+        onActionComplete?.Invoke();
+    }
+
+
+    //// 4-1. 실제 저장 실행
+    private void ExecuteLoad()
+    {
+        Debug.Log($"슬롯 {selectedSlotNumber} 불러오기 중...");
+
+        // 데이터가 있는지 확인
+        if (saveFile[selectedSlotNumber])
+        {
+            // 불러오기 실행
+            DataManager.instance.slot = selectedSlotNumber;
+            DataManager.instance.LoadData();
+
+            // 패널 닫기
+            gameObject.SetActive(false);
+
+            // 완료 콜백 실행
+            onActionComplete?.Invoke();
+        }
+        else
+        {
+            Debug.LogError($"슬롯 {selectedSlotNumber}에 데이터가 없습니다!");
+        }
+    }
+
+
+
+
+    // 확인 팝업 열기
+    private void ShowConfirmPopup(string message, bool saveMode)
+    {
+        Debug.Log("팝업 표시 시작");
+        isSaveMode = saveMode;
+
+        // 버튼들 일시 비활성화
+        for (int i = 0; i < slotButtons.Length; i++)
+        {
+            slotButtons[i].interactable = false;
+        }
+        saveActionButton.interactable = false;
+        loadActionButton.interactable = false;
+        cancelActionButton.interactable = false;
+
+        // loadingSlot이 꺼지지 않도록 보장
+        if (loadingSlot != null && !loadingSlot.activeSelf)
+        {
+            Debug.LogWarning("loadingSlot이 비활성화되어 있습니다. 다시 켭니다.");
+            loadingSlot.SetActive(true);
+        }
+
+
+        // 팝업 활성화
+        if (confirmPopup != null)
+        {
+            confirmPopup.SetActive(true);
+            confirmPopup.transform.SetAsLastSibling(); // UI 최상위로 이동
+
+            if (confirmText != null)
+            {
+                confirmText.text = message;
+                Debug.Log("팝업 텍스트 설정 완료");
+            }
+            else
+            {
+                Debug.LogError("confirmText가 null입니다!");
+            }
+
+            Debug.Log("팝업 표시 완료");
+        }
+        else
+        {
+            Debug.LogError("confirmPopup이 null입니다!");
+        }
+    }
+
+
+
+    // 확인 팝업 닫기
+    private void HideConfirmPopup()
+    {
+        if (confirmPopup != null)
+            confirmPopup.SetActive(false);
+
+        // 버튼들 다시 활성화
+        for (int i = 0; i < slotButtons.Length; i++)
+        {
+            slotButtons[i].interactable = true;
+        }
+        if (saveActionButton != null)
+            saveActionButton.interactable = true;
+        if (loadActionButton != null)
+            loadActionButton.interactable = true;
+        if (cancelActionButton != null)
+            cancelActionButton.interactable = true;
+
+        Debug.Log("팝업 닫힘, 버튼들 다시 활성화");
+    }
+
+
 
 
     public void UpdateSlotUI()
@@ -89,15 +354,7 @@ public class SelectSlot : MonoBehaviour
                 mapImages[i].sprite = null;
                 mapImages[i].color = new Color(0.3f, 0.3f, 0.3f);
 
-                if (isForLoading)
-                {
-                    //불러오기 모드면 빈 슬롯은 비활성화
-                    slotButtons[i].interactable = false;
-                }
-                else
-                {
-                    slotButtons[i].interactable = true;
-                }
+                slotButtons[i].interactable = true;
             }
         }
         // 원래 슬롯 번호 복원
@@ -140,61 +397,12 @@ public class SelectSlot : MonoBehaviour
     }
 
 
-    //슬롯 선택
-    public void Slot(int number)
-    {
-        DataManager.instance.slot = number;  //슬롯번호 입력
-
-        // 등록된 콜백 함수 실행
-        if (onSlotSelected != null)
-        {
-            onSlotSelected.Invoke(number);
-        }
-        else
-        {
-            // 기본 동작: 게임 시작
-            DefaultSlotAction(number);
-        }
-    }
-
-
-    // 기본 슬롯 동작 (게임 시작용)
-    private void DefaultSlotAction(int number)
-    {
-        if (saveFile[number])
-        {
-            //현재 슬롯에 세이브파일 있으면 데이터 불러오기
-            DataManager.instance.LoadData();
-        }
-        else
-        {
-            //현재 슬롯에 세이브파일 없으면 현재 데이터 저장
-            DataManager.instance.player = new PlayerData();
-            DataManager.instance.SaveData();
-        }
-
-        SceneManager.LoadScene("MainScene");
-    }
-
-
     // 저장 모드로 설정
     public void SetupForSave(System.Action onSaveComplete = null)
     {
         isForLoading = false;
+        onActionComplete = onSaveComplete;
         UpdateSlotUI();
-
-        onSlotSelected = (slotNumber) =>
-        {
-            // 저장 실행
-            DataManager.instance.slot = slotNumber;
-            DataManager.instance.SaveData();
-
-            // 패널 닫기
-            gameObject.SetActive(false);
-
-            // 완료 콜백 실행
-            onSaveComplete?.Invoke();
-        };
     }
 
 
@@ -202,28 +410,8 @@ public class SelectSlot : MonoBehaviour
     public void SetupForLoad(System.Action onLoadComplete = null)
     {
         isForLoading = true;
+        onActionComplete = onLoadComplete;
         UpdateSlotUI();
-
-        onSlotSelected = (slotNumber) =>
-        {
-            // 데이터가 있는지 확인
-            if (saveFile[slotNumber])
-            {
-                // 불러오기 실행
-                DataManager.instance.slot = slotNumber;
-                DataManager.instance.LoadData();
-
-                // 패널 닫기
-                gameObject.SetActive(false);
-
-                // 완료 콜백 실행
-                onLoadComplete?.Invoke();
-            }
-            else
-            {
-                Debug.LogError($"슬롯 {slotNumber}에 데이터가 없음");
-            }
-        };
     }
 
 
@@ -231,8 +419,8 @@ public class SelectSlot : MonoBehaviour
     public void SetupForGameStart()
     {
         isForLoading = false;
+        onActionComplete = null;  // 기본 동작 사용
         UpdateSlotUI();
-        onSlotSelected = null;  // 기본 동작 사용
     }
 
 
