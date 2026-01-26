@@ -1,6 +1,7 @@
-using UnityEngine;
-using System.IO;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
 
 // 플레이 중 생성되는 데이터 전체
 [System.Serializable]
@@ -9,6 +10,7 @@ public class PlayerData
     public float posX;
     public float posY;
     public float posZ;
+    public float playTime;
 }
 [System.Serializable]
 public class ObjectData
@@ -76,6 +78,8 @@ public class DataManager : MonoBehaviour
     public string savePath;
     public int slot;
 
+    private float playTimeStart;  //플레이타임 추적
+
 
     private void Awake()
     {
@@ -102,6 +106,17 @@ public class DataManager : MonoBehaviour
             return;
         }
         #endregion
+
+        playTimeStart = Time.time;
+    }
+
+
+    public void Update()
+    {
+        if (player != null)
+        {
+            player.playTime = Time.time - playTimeStart;
+        }
     }
 
 
@@ -157,6 +172,8 @@ public class DataManager : MonoBehaviour
     // 전체 데이터 저장
     public void SaveData()
     {
+        player.playTime = Time.time - playTimeStart;
+
         GameData saveData = new GameData
         {
             player = player,
@@ -186,6 +203,11 @@ public class DataManager : MonoBehaviour
             acquiredClues = saveData.acquiredClues;
             acquiredQuestions = saveData.acquiredQuestions;
             investedObjects = saveData.investedObjects;
+
+            // 플레이타임 초기화 (이어서 계속)
+            playTimeStart = Time.time - player.playTime;
+
+            Debug.Log($"슬롯 {slot} 불러오기 완료");
         }
     }
 
@@ -312,6 +334,58 @@ public class DataManager : MonoBehaviour
     public bool IsObjectDestroyed(string objectID)
     {
         return investedObjects.Contains(objectID);
+    }
+
+
+
+    // 플레이타임 포맷팅
+    public static string FormatPlayTime(float seconds)
+    {
+        int hour = (int)(seconds / 3600);
+        int min = (int)((seconds % 3600) / 60);
+        int sec = (int)(seconds % 60);
+
+        return $"{hour}:{min}:{sec}";
+    }
+
+
+    //스크린샷 저장
+    public IEnumerator CaptureScreenshotCoroutine()
+    {
+        string screenshotPath = savePath + $"{slot}.png";
+        
+
+        // 렌더링 완료 대기
+        yield return new WaitForEndOfFrame();
+
+        // 화면을 Texture2D로 직접 캡처
+        int width = Screen.width;
+        int height = Screen.height;
+        Texture2D screenshot = new Texture2D(width, height, TextureFormat.RGB24, false);
+        screenshot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        screenshot.Apply();
+
+        // PNG로 인코딩
+        byte[] bytes = screenshot.EncodeToPNG();
+
+        // 파일 저장
+        try
+        {
+            System.IO.File.WriteAllBytes(screenshotPath, bytes);
+
+            // 확인
+            if (System.IO.File.Exists(screenshotPath))
+            {
+                FileInfo info = new FileInfo(screenshotPath);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"스크린샷 저장 실패: {e.Message}");
+        }
+
+        // 메모리 해제
+        Destroy(screenshot);
     }
 }
 
