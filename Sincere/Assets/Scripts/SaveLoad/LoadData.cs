@@ -8,7 +8,6 @@ public class LoadData : MonoBehaviour
     private Button button;
     public GameObject loading;
     public SelectSlot slotPanel;
-    public GameObject closeBtn; // 민채은 수정 - 닫기 버튼 추가
 
     public GameObject player;
 
@@ -22,7 +21,6 @@ public class LoadData : MonoBehaviour
         if (slotPanel != null)
         {
             slotPanel.gameObject.SetActive(false);
-            closeBtn.gameObject.SetActive(false);   // 닫기 버튼 추가
         }
     }
 
@@ -40,7 +38,6 @@ public class LoadData : MonoBehaviour
         {
             loading.SetActive(true);
             slotPanel.gameObject.SetActive(true);
-            closeBtn.SetActive(true);   // 닫기 버튼 추가
             slotPanel.SetupForLoad(GetLoadedData);  //불러오기 모드
         }
     }
@@ -49,12 +46,5 @@ public class LoadData : MonoBehaviour
     private void GetLoadedData()
     {
         SceneManager.LoadScene("MainScene");
-    }
-
-
-    //닫기 버튼 클릭시 패널 닫힘
-    public void CloseLoading()
-    {
-        loading.SetActive(false);
     }
 }
