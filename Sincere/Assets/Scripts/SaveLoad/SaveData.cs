@@ -6,6 +6,7 @@ using System.Collections;
 public class SaveData : MonoBehaviour
 {
     private Button button;
+    public GameObject loading;
     public SelectSlot slotPanel;
 
     public GameObject player;
@@ -17,10 +18,10 @@ public class SaveData : MonoBehaviour
         button.onClick.AddListener(OnClick);
 
         // 슬롯 패널 숨기기
-        if (slotPanel != null)
+        /*if (slotPanel != null)
         {
             slotPanel.gameObject.SetActive(false);
-        }
+        }*/
     }
 
 
@@ -39,8 +40,9 @@ public class SaveData : MonoBehaviour
         }
         else { print("플레이어 연결 안됨"); }
 
-        if (slotPanel != null)
+        if (loading != null)
         {
+            loading.SetActive(true);
             slotPanel.gameObject.SetActive(true);
             slotPanel.SetupForSave(OnSaveComplete);  //저장 모드
         }

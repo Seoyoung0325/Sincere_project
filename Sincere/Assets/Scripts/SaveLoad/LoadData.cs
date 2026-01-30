@@ -18,10 +18,10 @@ public class LoadData : MonoBehaviour
         button.onClick.AddListener(OnClick);
 
         // ½½·Ô ÆÐ³Î ¼û±â±â
-        if (slotPanel != null)
+        /*if (slotPanel != null)
         {
             slotPanel.gameObject.SetActive(false);
-        }
+        }*/
     }
 
 
