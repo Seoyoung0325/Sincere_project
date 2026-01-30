@@ -55,7 +55,7 @@ public class GameData
     public PlayerData player;
     public List<ClueData> acquiredClues;
     public List<QuestionData> acquiredQuestions;
-    public List<string> investedObjects;
+    public List<string> destroyedObjects;
 }
 
 
@@ -68,7 +68,7 @@ public class DataManager : MonoBehaviour
 
     public List<ClueData> acquiredClues = new List<ClueData>();
     public List<QuestionData> acquiredQuestions = new List<QuestionData>();
-    public List<string> investedObjects = new List<string>();
+    public List<string> destroyedObjects = new List<string>();
 
     public List<ObjectData> allObjects = new List<ObjectData>();
     public List<ClueData> allClues = new List<ClueData>();
@@ -179,7 +179,7 @@ public class DataManager : MonoBehaviour
             player = player,
             acquiredClues = acquiredClues,
             acquiredQuestions = acquiredQuestions,
-            investedObjects = investedObjects
+            destroyedObjects = destroyedObjects
         };
 
         string savedData = JsonUtility.ToJson(saveData, true);  //데이터 -> JSON으로 변환
@@ -202,7 +202,7 @@ public class DataManager : MonoBehaviour
             player = saveData.player;
             acquiredClues = saveData.acquiredClues;
             acquiredQuestions = saveData.acquiredQuestions;
-            investedObjects = saveData.investedObjects;
+            destroyedObjects = saveData.destroyedObjects;
 
             // 플레이타임 초기화 (이어서 계속)
             playTimeStart = Time.time - player.playTime;
@@ -323,9 +323,9 @@ public class DataManager : MonoBehaviour
     // 오브젝트 파괴 기록
     public void RegisterDestroyedObject(string objectID)
     {
-        if (!investedObjects.Contains(objectID))
+        if (!destroyedObjects.Contains(objectID))
         {
-            investedObjects.Add(objectID);
+            destroyedObjects.Add(objectID);
             Debug.Log($"{objectID} 오브젝트 파괴");
         }
     }
@@ -333,7 +333,7 @@ public class DataManager : MonoBehaviour
     // 오브젝트가 파괴되었는지 확인
     public bool IsObjectDestroyed(string objectID)
     {
-        return investedObjects.Contains(objectID);
+        return destroyedObjects.Contains(objectID);
     }
 
 
