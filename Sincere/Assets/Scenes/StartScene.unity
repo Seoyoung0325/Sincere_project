@@ -4798,6 +4798,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loading: {fileID: 706817474}
   slotPanel: {fileID: 697634377}
+  saveActionButton: {fileID: 8519638564974684356}
+  loadActionButton: {fileID: 1320180602}
   player: {fileID: 0}
 --- !u!1 &1710538150
 GameObject:
@@ -6857,6 +6859,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1250659118790379471, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1498834835507743790, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1969714265307205220, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}

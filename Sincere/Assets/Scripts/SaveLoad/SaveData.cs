@@ -8,6 +8,8 @@ public class SaveData : MonoBehaviour
     private Button button;
     public GameObject loading;
     public SelectSlot slotPanel;
+    public Button saveActionButton;
+    public Button loadActionButton;
 
     public GameObject player;
 
@@ -28,6 +30,9 @@ public class SaveData : MonoBehaviour
     //저장하기 버튼 클릭 -> 데이터 저장 -> 슬롯패널 열기
     private void OnClick()
     {
+        saveActionButton.gameObject.SetActive(true);
+        loadActionButton.gameObject.SetActive(false);
+
         if (DataManager.instance == null)
         {
             Debug.LogError("DataManager 연결 안됨");

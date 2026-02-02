@@ -798,7 +798,7 @@ GameObject:
   - component: {fileID: 312387865}
   - component: {fileID: 312387868}
   m_Layer: 5
-  m_Name: MenuBtn
+  m_Name: SaveBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -920,6 +920,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loading: {fileID: 411641218}
   slotPanel: {fileID: 351005158}
+  saveActionButton: {fileID: 2138008600}
+  loadActionButton: {fileID: 411641195}
   player: {fileID: 2057665322}
 --- !u!114 &351005158 stripped
 MonoBehaviour:
@@ -1437,7 +1439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 577176663211350191, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 333.33337
+      value: 333.33334
       objectReference: {fileID: 0}
     - target: {fileID: 577176663211350191, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1525,7 +1527,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1498834835507743790, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1969714265307205220, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1542,6 +1544,10 @@ PrefabInstance:
     - target: {fileID: 1969714265307205220, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -625
+      objectReference: {fileID: 0}
+    - target: {fileID: 2106820121825357769, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 765
       objectReference: {fileID: 0}
     - target: {fileID: 2155135468217921548, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}
       propertyPath: m_Name
@@ -1582,6 +1588,10 @@ PrefabInstance:
     - target: {fileID: 5118651668896054127, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}
       propertyPath: m_SortingOrder
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5413646090545186056, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6000947612627245930, guid: e02950eb6dc99ec4994c3d9b0ae6820b, type: 3}
       propertyPath: m_IsActive
@@ -6331,7 +6341,7 @@ GameObject:
   - component: {fileID: 1580039875}
   - component: {fileID: 1580039874}
   m_Layer: 5
-  m_Name: MenuBtn (1)
+  m_Name: LoadBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6371,6 +6381,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loading: {fileID: 411641218}
   slotPanel: {fileID: 351005158}
+  saveActionButton: {fileID: 2138008600}
+  loadActionButton: {fileID: 411641195}
   player: {fileID: 2057665322}
 --- !u!114 &1580039875
 MonoBehaviour:

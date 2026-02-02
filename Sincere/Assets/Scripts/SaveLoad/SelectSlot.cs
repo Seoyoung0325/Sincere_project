@@ -340,7 +340,16 @@ public class SelectSlot : MonoBehaviour
                 mapImages[i].sprite = null;
                 mapImages[i].color = new Color(0.3f, 0.3f, 0.3f);
 
-                slotButtons[i].interactable = true;
+                /////////////////////////////////
+                if (isForLoading)
+                {
+                    //불러오기 모드면 빈 슬롯은 비활성화
+                    slotButtons[i].interactable = false;
+                }
+                else
+                {
+                    slotButtons[i].interactable = true;
+                }
             }
         }
         // 원래 슬롯 번호 복원
