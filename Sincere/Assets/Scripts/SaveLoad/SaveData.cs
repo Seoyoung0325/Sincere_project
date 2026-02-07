@@ -6,7 +6,10 @@ using System.Collections;
 public class SaveData : MonoBehaviour
 {
     private Button button;
+    public GameObject loading;
     public SelectSlot slotPanel;
+    public Button saveActionButton;
+    public Button loadActionButton;
 
     public GameObject player;
 
@@ -17,16 +20,19 @@ public class SaveData : MonoBehaviour
         button.onClick.AddListener(OnClick);
 
         // 슬롯 패널 숨기기
-        if (slotPanel != null)
+        /*if (slotPanel != null)
         {
             slotPanel.gameObject.SetActive(false);
-        }
+        }*/
     }
 
 
     //저장하기 버튼 클릭 -> 데이터 저장 -> 슬롯패널 열기
     private void OnClick()
     {
+        saveActionButton.gameObject.SetActive(true);
+        loadActionButton.gameObject.SetActive(false);
+
         if (DataManager.instance == null)
         {
             Debug.LogError("DataManager 연결 안됨");
@@ -39,8 +45,9 @@ public class SaveData : MonoBehaviour
         }
         else { print("플레이어 연결 안됨"); }
 
-        if (slotPanel != null)
+        if (loading != null)
         {
+            loading.SetActive(true);
             slotPanel.gameObject.SetActive(true);
             slotPanel.SetupForSave(OnSaveComplete);  //저장 모드
         }

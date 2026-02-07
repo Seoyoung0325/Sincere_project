@@ -54,7 +54,6 @@ public class SelectSlot : MonoBehaviour
         // 액션 버튼 이벤트 등록
         if (saveActionButton != null)
         {
-            saveActionButton.onClick.RemoveAllListeners();
             saveActionButton.onClick.AddListener(OnSaveActionClicked);
         }
 
@@ -86,8 +85,6 @@ public class SelectSlot : MonoBehaviour
         selectedSlotNumber = slotNumber;
         DataManager.instance.slot = slotNumber;
 
-        Debug.Log($"슬롯 {slotNumber} 선택됨");
-
         HideAllOutlines();
 
         // 선택된 슬롯 테두리만 켜기
@@ -113,7 +110,7 @@ public class SelectSlot : MonoBehaviour
     //// 2-1. 저장하기 버튼 클릭
     private void OnSaveActionClicked()
     {
-        Debug.Log("저장클릭");
+        Debug.Log("저장 클릭");
         if (selectedSlotNumber < 0)
         {
             Debug.LogError("슬롯이 선택되지 않았습니다!");
@@ -129,7 +126,7 @@ public class SelectSlot : MonoBehaviour
     //// 2-2. 불러오기 버튼 클릭
     private void OnLoadActionClicked()
     {
-        Debug.Log("불러오기클릭");
+        Debug.Log("불러오기 클릭");
         if (selectedSlotNumber < 0)
         {
             Debug.LogError("슬롯이 선택되지 않았습니다!");
@@ -152,6 +149,7 @@ public class SelectSlot : MonoBehaviour
     // 뒤로가기 버튼 클릭
     private void OnCancelActionClicked()
     {
+        HideAllOutlines();
         selectedSlotNumber = -1;
         if (loadingSlot != null)
             loadingSlot.SetActive(false);
@@ -162,7 +160,6 @@ public class SelectSlot : MonoBehaviour
     //// 3-1. 확인 팝업에서 "예" 클릭
     private void OnConfirmYes()
     {
-        Debug.Log("예");
         HideConfirmPopup();
 
         if (isSaveMode)
@@ -182,7 +179,6 @@ public class SelectSlot : MonoBehaviour
     //// 3-1. 확인 팝업에서 "아니요" 클릭
     private void OnConfirmNo()
     {
-        Debug.Log("아니요");
         HideConfirmPopup();
     }
 
@@ -195,18 +191,17 @@ public class SelectSlot : MonoBehaviour
 
         DataManager.instance.slot = selectedSlotNumber;
 
-        // 패널 닫기
-        gameObject.SetActive(false);
-
         // 완료 콜백 실행 (SaveData.cs에서 스크린샷과 함께 저장)
         onActionComplete?.Invoke();
+        loadingSlot.SetActive(false);
+        //confirmPopup
     }
 
 
-    //// 4-1. 실제 저장 실행
+    //// 4-2. 실제 불러오기 실행
     private void ExecuteLoad()
     {
-        Debug.Log($"슬롯 {selectedSlotNumber} 불러오기 중...");
+        Debug.Log($"슬롯 {selectedSlotNumber} 불러오는 중...");
 
         // 데이터가 있는지 확인
         if (saveFile[selectedSlotNumber])
@@ -215,11 +210,9 @@ public class SelectSlot : MonoBehaviour
             DataManager.instance.slot = selectedSlotNumber;
             DataManager.instance.LoadData();
 
-            // 패널 닫기
-            gameObject.SetActive(false);
-
             // 완료 콜백 실행
             onActionComplete?.Invoke();
+            loadingSlot.SetActive(false);
         }
         else
         {
@@ -233,7 +226,6 @@ public class SelectSlot : MonoBehaviour
     // 확인 팝업 열기
     private void ShowConfirmPopup(string message, bool saveMode)
     {
-        Debug.Log("팝업 표시 시작");
         isSaveMode = saveMode;
 
         // 버튼들 일시 비활성화
@@ -248,7 +240,6 @@ public class SelectSlot : MonoBehaviour
         // loadingSlot이 꺼지지 않도록 보장
         if (loadingSlot != null && !loadingSlot.activeSelf)
         {
-            Debug.LogWarning("loadingSlot이 비활성화되어 있습니다. 다시 켭니다.");
             loadingSlot.SetActive(true);
         }
 
@@ -262,14 +253,11 @@ public class SelectSlot : MonoBehaviour
             if (confirmText != null)
             {
                 confirmText.text = message;
-                Debug.Log("팝업 텍스트 설정 완료");
             }
             else
             {
                 Debug.LogError("confirmText가 null입니다!");
             }
-
-            Debug.Log("팝업 표시 완료");
         }
         else
         {
@@ -296,8 +284,6 @@ public class SelectSlot : MonoBehaviour
             loadActionButton.interactable = true;
         if (cancelActionButton != null)
             cancelActionButton.interactable = true;
-
-        Debug.Log("팝업 닫힘, 버튼들 다시 활성화");
     }
 
 
@@ -354,7 +340,16 @@ public class SelectSlot : MonoBehaviour
                 mapImages[i].sprite = null;
                 mapImages[i].color = new Color(0.3f, 0.3f, 0.3f);
 
-                slotButtons[i].interactable = true;
+                /////////////////////////////////
+                if (isForLoading)
+                {
+                    //불러오기 모드면 빈 슬롯은 비활성화
+                    slotButtons[i].interactable = false;
+                }
+                else
+                {
+                    slotButtons[i].interactable = true;
+                }
             }
         }
         // 원래 슬롯 번호 복원
